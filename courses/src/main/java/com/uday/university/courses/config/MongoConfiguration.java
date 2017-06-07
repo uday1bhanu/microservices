@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.uday.university.courses;
+package com.uday.university.courses.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
