@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  metadata:
+  name: courses-v1
+  labels:
+    name: courses-v1
+    environment: dev
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: courses
+        environment: dev
+        version: v1
+    spec:
+      containers:
+      - name: courses
+        image: uday1bhanu/courses:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8092
