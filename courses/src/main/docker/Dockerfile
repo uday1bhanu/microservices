@@ -3,4 +3,4 @@ VOLUME /tmp
 ADD courses-0.0.1-SNAPSHOT.jar app.jar
 RUN sh -c 'touch /app.jar'
 ENV JAVA_OPTS=""
-ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=uday -Dmongodb.url=mongodb://admin:admin@10.0.0.99:27017/university -jar /app.jar" ]
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=uday -Dmongodburl=mongodb://admin:admin@10.0.0.233:27017/university -jar /app.jar" ]
