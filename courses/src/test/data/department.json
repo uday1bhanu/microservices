@@ -1,0 +1,12 @@
+{
+	"name": "Computer Science Engineering",
+	"code": "CSE",
+	"courses": [
+	  {
+	    "name": "java",
+	    "code": "J101",
+	    "credits": 3,
+	    "description": "Java Fundamentals"
+	  }
+	]
+}

@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: mongo
-          image: uday1bhanu/mongodb:latest
+          image: bitnami/mongodb:latest
           imagePullPolicy: Always
           command:
             - mongod

@@ -5,8 +5,10 @@ metadata:
   labels:
     name: courses
 spec:
+  type: NodePort
   ports:
   - port: 9000
+    nodePort: 30001
     name: http
   selector:
     name: courses

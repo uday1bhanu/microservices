@@ -20,3 +20,6 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8092
+        env:
+          - name: mongodburl
+            value: mongodb://admin:admin@uday-alpha-mongodb.default.svc.cluster.local:27017/university
