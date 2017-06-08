@@ -50,5 +50,3 @@ spec:
       resources:
         requests:
           storage: 2Gi
-      hostPath:
-        path: /tmp
