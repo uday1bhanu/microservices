@@ -1,7 +1,6 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  metadata:
   name: courses-v1
   labels:
     name: courses-v1
