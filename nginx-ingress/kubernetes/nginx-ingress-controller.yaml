@@ -3,14 +3,15 @@ kind: Deployment
 metadata:
   name: nginx-ingress-controller
   labels:
-    k8s-app: nginx-ingress-controller
-  namespace: kube-system
+    name: nginx-ingress-controller
+    environment: dev
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        k8s-app: nginx-ingress-controller
+        name: nginx-ingress-controller
+        environment: dev
     spec:
       # hostNetwork makes it possible to use ipv6 and to preserve the source IP correctly regardless of docker configuration
       # however, it is not a hard dependency of the nginx-ingress-controller itself and it may cause issues if port 10254 already is taken on the host
@@ -49,4 +50,3 @@ spec:
                 fieldPath: metadata.namespace
         args:
         - /nginx-ingress-controller
-        - --default-backend-service=$(POD_NAMESPACE)/default-http-backend

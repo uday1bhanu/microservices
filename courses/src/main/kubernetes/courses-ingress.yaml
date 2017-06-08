@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: courses
+spec:
+  rules:
+  - host: courses.192.168.99.100.nip.io
+    http:
+      paths:
+      - backend:
+          serviceName: courses
+          servicePort: 80
