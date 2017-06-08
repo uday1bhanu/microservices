@@ -33,6 +33,13 @@ public class DepartmentController {
 	@Autowired
 	private DepartmentService departmentService;
 	
+	@RequestMapping(method=RequestMethod.GET, value="/healthz", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> healthCheck(){
+		StringBuilder responseBody = new StringBuilder();
+		responseBody.append("{\"health\": \"OK\"}");
+        return new ResponseEntity<String>(responseBody.toString(), HttpStatus.OK);
+	}
+	
 	@RequestMapping(method=RequestMethod.GET, value="/departments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<DepartmentResource> findById(@RequestParam(value = "id") final ObjectId departmentId){
 		Department department = departmentService.findDepartment(departmentId);

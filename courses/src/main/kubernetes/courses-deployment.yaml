@@ -19,7 +19,29 @@ spec:
         image: uday1bhanu/courses:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8092
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
         env:
           - name: mongodburl
             value: mongodb://admin:admin@uday-alpha-mongodb.default.svc.cluster.local:27017/university
+          - name: serverport
+            value: 8080
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        
