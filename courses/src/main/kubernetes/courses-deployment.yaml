@@ -17,6 +17,6 @@ spec:
       containers:
       - name: courses
         image: uday1bhanu/courses:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 8092

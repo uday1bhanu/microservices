@@ -17,7 +17,8 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: mongo
-          image: mongo
+          image: uday1bhanu/mongodb:latest
+          imagePullPolicy: Always
           command:
             - mongod
             - "--replSet"
