@@ -7,6 +7,8 @@ metadata:
   labels:
     name: nginx-ingress-lb
     environment: dev
+    app: nginx-ingress-lb
+    version: v1
 spec:
   replicas: 1
   template:
@@ -14,6 +16,7 @@ spec:
       labels:
         name: nginx-ingress-lb
         environment: dev
+        app: nginx-ingress-lb
         version: v1
     spec:
       terminationGracePeriodSeconds: 60
@@ -45,4 +48,4 @@ spec:
           hostPort: 443
         args:
         - /nginx-ingress-controller
-        - --default-backend-service=default/default-http-backend
+        - --default-backend-service=default/courses

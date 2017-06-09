@@ -4,6 +4,9 @@ metadata:
   name: courses
   labels:
     name: courses
+    environment: dev
+    app: courses
+    version: v1
 spec:
   type: ClusterIP
   ports:
@@ -11,5 +14,5 @@ spec:
     targetPort: 8080
     name: http
   selector:
-    name: courses
+    app: courses
     environment: dev

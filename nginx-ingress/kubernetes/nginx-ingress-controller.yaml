@@ -5,6 +5,8 @@ metadata:
   labels:
     name: nginx-ingress-controller
     environment: dev
+    app: nginx-ingress-controller
+    version: v1
 spec:
   replicas: 1
   template:
@@ -12,6 +14,8 @@ spec:
       labels:
         name: nginx-ingress-controller
         environment: dev
+        app: nginx-ingress-controller
+        version: v1
     spec:
       # hostNetwork makes it possible to use ipv6 and to preserve the source IP correctly regardless of docker configuration
       # however, it is not a hard dependency of the nginx-ingress-controller itself and it may cause issues if port 10254 already is taken on the host

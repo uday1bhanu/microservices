@@ -5,6 +5,8 @@ metadata:
   labels:
     name: courses-v1
     environment: dev
+    app: courses-v1
+    version: v1
 spec:
   replicas: 1
   template:
@@ -12,6 +14,7 @@ spec:
       labels:
         name: courses
         environment: dev
+        app: courses
         version: v1
     spec:
       containers:
