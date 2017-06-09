@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: 2017-06-08T23:04:43Z
+  labels:
+    app: uday-alpha-mongodb
+    chart: mongodb-0.4.10
+    heritage: Tiller
+    release: uday-alpha
+  name: uday-alpha-mongodb
+  namespace: default
+  resourceVersion: "86712"
+  selfLink: /api/v1/namespaces/default/services/uday-alpha-mongodb
+  uid: db90779d-4c9e-11e7-bf84-080027631ca6
+spec:
+  clusterIP: 10.0.0.47
+  ports:
+  - name: mongodb
+    port: 27017
+    protocol: TCP
+    targetPort: mongodb
+  selector:
+    app: uday-alpha-mongodb
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
