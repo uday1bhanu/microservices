@@ -50,3 +50,4 @@ spec:
                 fieldPath: metadata.namespace
         args:
         - /nginx-ingress-controller
+        - --default-backend-service=default/courses
