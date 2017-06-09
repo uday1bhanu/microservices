@@ -2,9 +2,10 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: courses
-  environment: dev
-  app: courses
-  version: v1
+  labels:
+    environment: dev
+    app: courses
+    version: v1
   annotations:
     kubernetes.io/ingress.class: "istio"
 spec:
