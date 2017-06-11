@@ -1,19 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: courses
+  labels:
+    app: courses
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: courses
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: courses-v1
-  labels:
-    name: courses-v1
-    environment: dev
-    app: courses-v1
-    version: v1
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: courses
-        environment: dev
         app: courses
         version: v1
     spec:
@@ -21,30 +27,33 @@ spec:
       - name: courses
         image: uday1bhanu/courses:latest
         imagePullPolicy: Always
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 8081
-            scheme: HTTP
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8081
-            scheme: HTTP
-          initialDelaySeconds: 60
-          timeoutSeconds: 1
         ports:
-        - containerPort: 8081
+        - containerPort: 9080
         env:
           - name: spring_data_mongodb_uri
             value: mongodb://admin:admin@uday-alpha-mongodb.default.svc.cluster.local:27017/university
           - name: server_port
-            value: "8081"
+            value: "9080"
         resources:
           limits:
             cpu: 500m
             memory: 256Mi
           requests:
             cpu: 250m
-            memory: 128Mi 
-
+            memory: 128Mi
+---
+##########################################################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gateway
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /departments
+        backend:
+          serviceName: productpage
+          servicePort: 9080
