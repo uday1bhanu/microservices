@@ -34,10 +34,10 @@ public class DepartmentService {
 	
 	@Autowired
 	public DepartmentService(){
-		if(System.getProperty("service.department.url")!=null)
-			this.serviceUrl = System.getProperty("service.department.url");
-		else if(System.getenv("service.department.url")!=null){
-			this.serviceUrl = System.getenv("service.department.url");
+		if(System.getProperty("service_department_url")!=null)
+			this.serviceUrl = System.getProperty("service_department_url");
+		else if(System.getenv("service_department_url")!=null){
+			this.serviceUrl = System.getenv("service_department_url");
 		}
 	}
 	
