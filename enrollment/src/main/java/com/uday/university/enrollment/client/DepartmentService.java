@@ -34,7 +34,7 @@ public class DepartmentService {
 	
 	@Autowired
 	public void DepartmentSercice(){
-		this.serviceUrl = System.getProperty("service.department.url");
+		this.serviceUrl = System.getenv("service.department.url");
 	}
 	
 	public Department findByDepartmentId(ObjectId departmentId){
