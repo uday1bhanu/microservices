@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: enrollment
+  labels:
+    app: enrollment
+spec:
+  ports:
+  - port: 9081
+    name: http
+  selector:
+    app: enrollment
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: enrollment-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: enrollment
+        version: v1
+    spec:
+      containers:
+      - name: enrollment
+        image: uday1bhanu/enrollment:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9081
+        env:
+          - name: spring_data_mongodb_uri
+            value: mongodb://admin:admin@uday-alpha-mongodb.default.svc.cluster.local:27017/university
+          - name: server_port
+            value: "9081"
+          - name: service_department_url
+            value: http://192.168.99.100:32704
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+---
+##########################################################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gateway
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /students
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /professors
+        backend:
+          serviceName: enrollment
+          servicePort: 9081

@@ -13,6 +13,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.uday.university.courses.utility.ObjectIdJsonSerializer;
+
 /**
  * @author udaybhanuprasad
  *
@@ -20,6 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection="department")
 public class Department {
 	@Id
+	@JsonSerialize(using = ObjectIdJsonSerializer.class)
 	private ObjectId id;
 	private String name;
 	private String code;

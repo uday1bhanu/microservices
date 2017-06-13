@@ -1,30 +1,45 @@
 /**
  * 
  */
-package com.uday.university.courses.model;
+package com.uday.university.enrollment.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.uday.university.enrollment.utility.ObjectIdJsonSerializer;
 
 /**
  * @author udaybhanuprasad
  *
  */
-public class Course {
+@Document(collection="department")
+public class Department {
+	@Id
+	@JsonSerialize(using = ObjectIdJsonSerializer.class)
+	private ObjectId id;
 	private String name;
-	@Indexed
 	private String code;
-	private int credits;
-	private String description;
+	private List<Course> courses = new ArrayList<Course>();
 	
 	@CreatedDate
 	private Date createdDate = new Date();
 	@LastModifiedDate
 	private Date lastModifiedDate = new Date();
 	
+	public ObjectId getId() {
+		return id;
+	}
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}
@@ -37,18 +52,13 @@ public class Course {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public int getCredits() {
-		return credits;
+	public List<Course> getCourses() {
+		return courses;
 	}
-	public void setCredits(int credits) {
-		this.credits = credits;
+	public void setCourses(List<Course> courses) {
+		this.courses = courses;
 	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	
 	public Date getCreatedDate() {
 		return createdDate;
 	}

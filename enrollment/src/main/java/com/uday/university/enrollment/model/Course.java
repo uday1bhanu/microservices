@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.uday.university.courses.model;
+package com.uday.university.enrollment.model;
 
 import java.util.Date;
 

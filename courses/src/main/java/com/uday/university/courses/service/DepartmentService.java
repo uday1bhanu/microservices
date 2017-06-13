@@ -18,6 +18,8 @@ public interface DepartmentService {
 	Department save(Department department);
 	Department addCourse(ObjectId departmentId, Course course) throws Exception;
 	List<Department> findAllDepartments();
-	Department findDepartment(ObjectId departmentId);
-	List<Course> findAllCourses(ObjectId departmentId);
+	Department findDepartmentByDepartmentId(ObjectId departmentId);
+	List<Course> findAllCoursesByDepartmentId(ObjectId departmentId);
+	Department findDepartmentByDepartmentCode(String departmentCode);
+	List<Course> findAllCoursesByDepartmentCode(String departmentCode);
 }

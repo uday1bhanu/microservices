@@ -28,36 +28,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.uday.university.courses.service.DepartmentService#findAllCourses(org.
-	 * bson.types.ObjectId)
-	 */
-	@Override
-	public List<Course> findAllCourses(ObjectId departmentId) {
-		return departmentRepository.findOne(departmentId).getCourses();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * com.uday.university.courses.service.DepartmentService#findAllDepartments(
 	 * )
 	 */
 	@Override
 	public List<Department> findAllDepartments() {
 		return departmentRepository.findAll();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.uday.university.courses.service.DepartmentService#findDepartment(org.
-	 * bson.types.ObjectId)
-	 */
-	@Override
-	public Department findDepartment(ObjectId departmentId) {
-		return departmentRepository.findOne(departmentId);
 	}
 
 	/*
@@ -89,5 +65,37 @@ public class DepartmentServiceImpl implements DepartmentService {
 		department.setCourses(courses);
 		
 		return departmentRepository.save(department);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.uday.university.courses.service.DepartmentService#findDepartmentByDepartmentId(org.bson.types.ObjectId)
+	 */
+	@Override
+	public Department findDepartmentByDepartmentId(ObjectId departmentId) {
+		return departmentRepository.findOne(departmentId);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.uday.university.courses.service.DepartmentService#findAllCoursesByDepartmentId(org.bson.types.ObjectId)
+	 */
+	@Override
+	public List<Course> findAllCoursesByDepartmentId(ObjectId departmentId) {
+		return departmentRepository.findOne(departmentId).getCourses();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.uday.university.courses.service.DepartmentService#findDepartmentByDepartmentCode(java.lang.String)
+	 */
+	@Override
+	public Department findDepartmentByDepartmentCode(String departmentCode) {
+		return departmentRepository.findByCode(departmentCode);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.uday.university.courses.service.DepartmentService#findAllCoursesByDepartmentCode(java.lang.String)
+	 */
+	@Override
+	public List<Course> findAllCoursesByDepartmentCode(String departmentCode) {
+		return departmentRepository.findByCode(departmentCode).getCourses();
 	}
 }

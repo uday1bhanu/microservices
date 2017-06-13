@@ -23,7 +23,7 @@ public class DepartmentResource extends ResourceSupport {
         this.department = department;
         //this.add(new Link("htgd", "department-link"));
         //this.add(linkTo(DepartmentController.class).withRel("bookmarks"));
-        this.add(linkTo(methodOn(DepartmentController.class).findById(department.getId())).withSelfRel());
+        this.add(linkTo(methodOn(DepartmentController.class).findByIdOrCode(department.getId(), department.getCode())).withSelfRel());
         this.add(new Link(linkTo(methodOn(DepartmentController.class).findAllCoursesByDepartmentId(department.getId())).withSelfRel().getHref(), "courses"));
     }
     
