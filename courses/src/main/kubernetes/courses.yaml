@@ -55,5 +55,5 @@ spec:
       paths:
       - path: /departments
         backend:
-          serviceName: productpage
+          serviceName: courses
           servicePort: 9080
