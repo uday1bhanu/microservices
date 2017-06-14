@@ -22,4 +22,5 @@ public interface PersonRepository extends MongoRepository<Person, ObjectId> {
 	public Person findByEmailAddress(String emailAddress);
 	public List<Person> findByDepartmentId(ObjectId departmentId);
 	public List<Person> findByDepartmentIdAndType(ObjectId departmentId, String type);
+	public List<Person> findAllByType(String type);
 }

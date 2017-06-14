@@ -143,4 +143,20 @@ public class PersonServiceImpl implements PersonService {
 		return personRepository.findByEmailAddressAndType(emailAddress, "P");
 	}
 
+	/* (non-Javadoc)
+	 * @see com.uday.university.enrollment.service.PersonService#findAllStudents()
+	 */
+	@Override
+	public List<Person> findAllStudents() {
+		return personRepository.findAllByType("S");
+	}
+
+	/* (non-Javadoc)
+	 * @see com.uday.university.enrollment.service.PersonService#findAllProfessors()
+	 */
+	@Override
+	public List<Person> findAllProfessors() {
+		return personRepository.findAllByType("P");
+	}
+
 }

@@ -23,7 +23,7 @@ public class PersonResource extends ResourceSupport {
         //this.add(new Link("htgd", "department-link"));
         //this.add(linkTo(DepartmentController.class).withRel("bookmarks"));
         if(person.getType().equals("S")){
-        	this.add(linkTo(methodOn(PersonController.class).findStudentsById(person.getId())).withSelfRel());
+        	this.add(linkTo(methodOn(PersonController.class).findStudents(person.getId())).withSelfRel());
         }
         else if(person.getType().equals("P")){
         	this.add(linkTo(methodOn(PersonController.class).findProfessorsById(person.getId())).withSelfRel());

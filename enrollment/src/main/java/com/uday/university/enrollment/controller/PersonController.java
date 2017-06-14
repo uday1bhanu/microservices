@@ -4,6 +4,7 @@
 package com.uday.university.enrollment.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -45,6 +46,29 @@ public class PersonController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/students", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<PersonResource>> findStudents(@RequestParam(value = "id", required=false) final ObjectId studentId){
+		List<Person> students = new ArrayList<Person>();
+		if(studentId!=null){
+			students.add(personService.findStudentById(studentId));
+		}
+		else {
+			students = personService.findAllStudents();
+		}
+		if (students == null) {
+            System.out.println("Students not found");
+            return new ResponseEntity<List<PersonResource>>(HttpStatus.NOT_FOUND);
+        }
+		
+		List<PersonResource> personResources = new ArrayList<PersonResource>();
+		for(Person student : students){
+			personResources.add(new PersonResource(student));
+		}
+		
+        return new ResponseEntity<List<PersonResource>>(personResources, null, HttpStatus.OK);
+	}
+	
+	/*
+	@RequestMapping(method=RequestMethod.GET, value="/students", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PersonResource> findStudentsById(@RequestParam(value = "id") final ObjectId studentId){
 		Person person = personService.findStudentById(studentId);
 		if (person == null) {
@@ -57,6 +81,7 @@ public class PersonController {
         
         return new ResponseEntity<PersonResource>(personResource, httpHeaders, HttpStatus.OK);
 	}
+	*/
 	
 	@RequestMapping(method=RequestMethod.GET, value="/professors", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PersonResource> findProfessorsById(@RequestParam(value = "id") final ObjectId professorId){

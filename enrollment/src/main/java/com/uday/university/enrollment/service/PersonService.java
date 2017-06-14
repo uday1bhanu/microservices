@@ -26,4 +26,6 @@ public interface PersonService {
 	Person findProfessorByFirstNameAndLastName(String firstName, String lastName);
 	Person findProfessorByEmailAddress(String emailAddress);
 	public List<Person> findProfessorsByDepartmentCode(String departmentCode);
+	public List<Person> findAllStudents();
+	public List<Person> findAllProfessors();
 }
