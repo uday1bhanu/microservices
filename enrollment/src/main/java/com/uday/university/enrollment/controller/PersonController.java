@@ -114,7 +114,9 @@ public class PersonController {
 		Person person = null;
 		String departmentCode = department.getCode();
 		System.out.println("PersonController#enrollDepartment::: DepartmentCode: "+ departmentCode);
+		System.out.println("PersonController#enrollDepartment::: Calling departmentService#findByDepartmentCode ");
 		department = departmentService.findByDepartmentCode(departmentCode);
+		System.out.println("PersonController#enrollDepartment::: Returned from departmentService#findByDepartmentCode ");
 		if(department == null){
 			throw new Exception("Department" + departmentCode + "not found");
 		}

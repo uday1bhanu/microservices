@@ -42,8 +42,10 @@ public class DepartmentController {
 	
 	@RequestMapping(method=RequestMethod.GET, value="/departments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<DepartmentResource> findByIdOrCode(@RequestParam(value = "id", required=false) final ObjectId departmentId, @RequestParam(value = "code", required=false) final String departmentCode){
+		System.out.println("DepartmentController#findByIdOrCode::: Received request for /departments");
 		Department department = null;
 		if(departmentId != null){
+			System.out.println("DepartmentController#findByIdOrCode::: DepartmentId: "+ departmentId);
 			department = departmentService.findDepartmentByDepartmentId(departmentId);
 		}
 		else if(null != departmentCode && !departmentCode.isEmpty()){
@@ -51,11 +53,13 @@ public class DepartmentController {
 			department = departmentService.findDepartmentByDepartmentCode(departmentCode);
 		}
 		if (department == null) {
+			System.out.println("DepartmentController#findByIdOrCode::: Fix this! Need to send back list of all departments");
             return new ResponseEntity<DepartmentResource>(HttpStatus.NOT_FOUND);
         }
 		DepartmentResource departmentResource = new DepartmentResource(department);
 		HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(URI.create(departmentResource.getLink("self").getHref()));
+        System.out.println("DepartmentController#findByIdOrCode::: Return response for /departments");
         return new ResponseEntity<DepartmentResource>(departmentResource, httpHeaders, HttpStatus.OK);
 	}
 	
