@@ -1,0 +1,225 @@
+#	Copyright 2016, Google, Inc.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http:#www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+apiVersion: v1
+data:
+  mongodb-password: YWRtaW4=
+  mongodb-root-password: YWRtaW4=
+kind: Secret
+metadata:
+  creationTimestamp: 2017-06-08T23:04:43Z
+  labels:
+    app: uday-secret-mongodb
+    chart: mongodb-0.4.10
+    heritage: Tiller
+    release: uday-alpha
+  name: uday-secret-mongodb
+  namespace: default
+  resourceVersion: "86707"
+  selfLink: /api/v1/namespaces/default/secrets/uday-secret-mongodb
+  uid: db8c405b-4c9e-11e7-bf84-080027631ca6
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  labels:
+    name: mongo
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  clusterIP: None
+  selector:
+    role: mongo
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  serviceName: "mongo"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        role: mongo
+        environment: test
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mongo
+          image: mongo
+          command:
+            - mongod
+            - "--replSet"
+            - rs0
+            - "--smallfiles"
+            - "--noprealloc"
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-persistent-storage
+              mountPath: /data/db
+        - name: mongo-sidecar
+          image: cvallance/mongo-k8s-sidecar
+          env:
+            - name: MONGO_SIDECAR_POD_LABELS
+              value: "role=mongo,environment=test"
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: mongodb-root-password
+                  name: uday-secret-mongodb
+            - name: MONGODB_USERNAME
+              value: admin
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: mongodb-password
+                  name: uday-secret-mongodb
+            - name: MONGODB_DATABASE
+              value: university
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent-storage
+      annotations:
+        volume.beta.kubernetes.io/storage-class: standard
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: courses
+  labels:
+    app: courses
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: courses
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: courses-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: courses
+        version: v1
+    spec:
+      containers:
+      - name: courses
+        image: uday1bhanu/courses:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9080
+        env:
+          - name: spring_data_mongodb_uri
+            value: mongodb://mongo-0.mongo.default.svc.cluster.local,mongo-1.mongo.default.svc.cluster.local,mongo-2.mongo.default.svc.cluster.local:27017/university
+          - name: server_port
+            value: "9080"
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enrollment
+  labels:
+    app: enrollment
+spec:
+  ports:
+  - port: 9081
+    name: http
+  selector:
+    app: enrollment
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: enrollment-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: enrollment
+        version: v1
+    spec:
+      containers:
+      - name: enrollment
+        image: uday1bhanu/enrollment:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9081
+        env:
+          - name: spring_data_mongodb_uri
+            value: mongodb://mongo-0.mongo.default.svc.cluster.local,mongo-1.mongo.default.svc.cluster.local,mongo-2.mongo.default.svc.cluster.local:27017/university
+          - name: server_port
+            value: "9081"
+          - name: service_department_url
+            value: http://192.168.99.100:32704
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+---
+##########################################################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: university-gateway
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /students
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /students/.*
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /professors
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /professors/*
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /departments
+        backend:
+          serviceName: courses
+          servicePort: 9080

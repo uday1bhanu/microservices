@@ -1,0 +1,276 @@
+#	Copyright 2016, Google, Inc.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http:#www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+apiVersion: v1
+data:
+  mongodb-password: YWRtaW4=
+  mongodb-root-password: YWRtaW4=
+kind: Secret
+metadata:
+  creationTimestamp: 2017-06-08T23:04:43Z
+  labels:
+    app: uday-secret-mongodb
+    chart: mongodb-0.4.10
+    heritage: Tiller
+    release: uday-alpha
+  name: uday-secret-mongodb
+  namespace: default
+  resourceVersion: "86707"
+  selfLink: /api/v1/namespaces/default/secrets/uday-secret-mongodb
+  uid: db8c405b-4c9e-11e7-bf84-080027631ca6
+type: Opaque
+---
+#kind: PersistentVolumeClaim
+#apiVersion: v1
+#metadata:
+#  name: uday-mondodb
+#  annotations:
+#    volume.alpha.kubernetes.io/storage-class: default
+#spec:
+#  accessModes:
+#    - ReadWriteOnce
+#  resources:
+#    requests:
+#      storage: 1Gi
+#  storageClassName: standard
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  creationTimestamp: 2017-06-13T01:27:30Z
+#  labels:
+#    app: uday-mongodb
+#  name: uday-mongodb
+#  namespace: default
+#spec:
+#  clusterIP: 10.0.0.147
+#  ports:
+#  - name: mongodb
+#    port: 27017
+#    protocol: TCP
+#    targetPort: mongodb
+#  selector:
+#    app: uday-mongodb
+#  type: ClusterIP
+#status:
+#  loadBalancer: {}
+#---
+#apiVersion: extensions/v1beta1
+#kind: Deployment
+#metadata:
+#  labels:
+#    app: uday-mongodb
+#  name: uday-mongodb
+#  namespace: default
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: uday-mongodb
+#  strategy:
+#    rollingUpdate:
+#      maxSurge: 1
+#      maxUnavailable: 1
+#    type: RollingUpdate
+#  template:
+#    metadata:
+#      labels:
+#        app: uday-mongodb
+#    spec:
+#      containers:
+#      - env:
+#        - name: MONGODB_ROOT_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              key: mongodb-root-password
+#              name: uday-secret-mongodb
+#        - name: MONGODB_USERNAME
+#          value: admin
+#        - name: MONGODB_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              key: mongodb-password
+#              name: uday-secret-mongodb
+#        - name: MONGODB_DATABASE
+#          value: university
+#        image: bitnami/mongodb:3.4.4-r1
+#        imagePullPolicy: IfNotPresent
+#        livenessProbe:
+#          exec:
+#            command:
+#            - mongo
+#            - --eval
+#            - db.adminCommand('ping')
+#          failureThreshold: 3
+#          initialDelaySeconds: 30
+#          periodSeconds: 10
+#          successThreshold: 1
+#          timeoutSeconds: 5
+#        name: uday-mongodb
+#        ports:
+#        - containerPort: 27017
+#          name: mongodb
+#          protocol: TCP
+#        readinessProbe:
+#          exec:
+#            command:
+#            - mongo
+#            - --eval
+#            - db.adminCommand('ping')
+#          failureThreshold: 3
+#          initialDelaySeconds: 5
+#          periodSeconds: 10
+#          successThreshold: 1
+#          timeoutSeconds: 1
+#        resources:
+#          requests:
+#            cpu: 100m
+#            memory: 256Mi
+#        terminationMessagePath: /dev/termination-log
+#        terminationMessagePolicy: File
+#        volumeMounts:
+#        - mountPath: /bitnami/mongodb
+#          name: data
+#      dnsPolicy: ClusterFirst
+#      restartPolicy: Always
+#      schedulerName: default-scheduler
+#      securityContext: {}
+#      terminationGracePeriodSeconds: 30
+#      volumes:
+#      - name: data
+#        persistentVolumeClaim:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: courses
+  labels:
+    app: courses
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: courses
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: courses-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: courses
+        version: v1
+    spec:
+      containers:
+      - name: courses
+        image: uday1bhanu/courses:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9080
+        env:
+          - name: spring_data_mongodb_uri
+            value: mongodb://admin:admin@uday-mongodb.default.svc.cluster.local:27017/university
+          - name: server_port
+            value: "9080"
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enrollment
+  labels:
+    app: enrollment
+spec:
+  ports:
+  - port: 9081
+    name: http
+  selector:
+    app: enrollment
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: enrollment-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: enrollment
+        version: v1
+    spec:
+      containers:
+      - name: enrollment
+        image: uday1bhanu/enrollment:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9081
+        env:
+          - name: spring_data_mongodb_uri
+            value: mongodb://admin:admin@uday-mongodb.default.svc.cluster.local:27017/university
+          - name: server_port
+            value: "9081"
+          - name: service_department_url
+            value: http://192.168.99.100:32704
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+---
+##########################################################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: university-gateway
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /students
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /students/.*
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /professors
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /professors/*
+        backend:
+          serviceName: enrollment
+          servicePort: 9081
+      - path: /departments
+        backend:
+          serviceName: courses
+          servicePort: 9080
+      - backend:
+          serviceName: uday-mongodb
+          servicePort: 27017
