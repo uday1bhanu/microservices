@@ -46,7 +46,8 @@ public class DepartmentController {
 		if(departmentId != null){
 			department = departmentService.findDepartmentByDepartmentId(departmentId);
 		}
-		else if(departmentCode != null && !departmentCode.isEmpty()){
+		else if(null != departmentCode && !departmentCode.isEmpty()){
+			System.out.println("DepartmentController#findByIdOrCode::: DepartmentCode: "+ departmentCode);
 			department = departmentService.findDepartmentByDepartmentCode(departmentCode);
 		}
 		if (department == null) {

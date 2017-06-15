@@ -88,6 +88,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	 */
 	@Override
 	public Department findDepartmentByDepartmentCode(String departmentCode) {
+		System.out.println("DepartmentService#findDepartmentByDepartmentCode::: DepartmentCode: "+ departmentCode);
 		return departmentRepository.findByCode(departmentCode);
 	}
 

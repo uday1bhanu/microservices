@@ -113,6 +113,7 @@ public class PersonController {
 	public ResponseEntity<PersonResource> enrollDepartment(@PathVariable("id") ObjectId studentId, @RequestBody Department department) throws Exception{
 		Person person = null;
 		String departmentCode = department.getCode();
+		System.out.println("PersonController#enrollDepartment::: DepartmentCode: "+ departmentCode);
 		department = departmentService.findByDepartmentCode(departmentCode);
 		if(department == null){
 			throw new Exception("Department" + departmentCode + "not found");
