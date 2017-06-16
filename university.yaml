@@ -179,6 +179,18 @@ spec:
       - name: courses
         image: uday1bhanu/courses:latest
         imagePullPolicy: Always
+        #readinessProbe:
+        #  httpGet:
+        #    path: /healthz
+        #    port: 9080
+        #    scheme: HTTP
+        #livenessProbe:
+        #  httpGet:
+        #    path: /healthz
+        #    port: 9080
+        #    scheme: HTTP
+        #  initialDelaySeconds: 60
+        #  timeoutSeconds: 1
         ports:
         - containerPort: 9080
         env:
@@ -223,6 +235,18 @@ spec:
       - name: enrollment
         image: uday1bhanu/enrollment:latest
         imagePullPolicy: Always
+        #readinessProbe:
+        #  httpGet:
+       #     path: /healthz
+        #    port: 9081
+        #    scheme: HTTP
+        #livenessProbe:
+        #  httpGet:
+        #    path: /healthz
+        #    port: 9081
+        #    scheme: HTTP
+        #  initialDelaySeconds: 60
+        #  timeoutSeconds: 1
         ports:
         - containerPort: 9081
         env:
