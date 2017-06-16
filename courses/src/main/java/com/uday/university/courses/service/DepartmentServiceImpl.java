@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Autowired
 	private DepartmentRepository departmentRepository;
-
+	Logger logger = LoggerFactory.getLogger("com.uday.university.courses.DepartmentServiceImpl");
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -88,7 +91,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	 */
 	@Override
 	public Department findDepartmentByDepartmentCode(String departmentCode) {
-		System.out.println("DepartmentService#findDepartmentByDepartmentCode::: DepartmentCode: "+ departmentCode);
+		logger.debug("DepartmentService#findDepartmentByDepartmentCode::: DepartmentCode: "+ departmentCode);
 		return departmentRepository.findByCode(departmentCode);
 	}
 

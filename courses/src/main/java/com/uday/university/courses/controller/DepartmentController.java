@@ -4,9 +4,13 @@
 package com.uday.university.courses.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
+
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,6 +36,8 @@ import com.uday.university.courses.service.DepartmentService;
 public class DepartmentController {
 	@Autowired
 	private DepartmentService departmentService;
+	Logger logger = LoggerFactory.getLogger("com.uday.university.courses.DepartmentController");
+	
 	
 	@RequestMapping(method=RequestMethod.GET, value="/healthz", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> healthCheck(){
@@ -39,28 +45,41 @@ public class DepartmentController {
 		responseBody.append("{\"health\": \"OK\"}");
         return new ResponseEntity<String>(responseBody.toString(), HttpStatus.OK);
 	}
+	@RequestMapping(method=RequestMethod.GET, value="/departments/all", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<DepartmentResource>> findAll(){
+		logger.debug("DepartmentController#findAll::: Received request for /departments");
+		List<Department> departments = new ArrayList<Department>();
+		departments = departmentService.findAllDepartments();
+		
+		if (departments == null) {
+			logger.debug("DepartmentController#findAll::: Fix this! Need to send back list of all departments");
+            return new ResponseEntity<List<DepartmentResource>>(HttpStatus.NOT_FOUND);
+        }
+		List<DepartmentResource> departmentResources = new ArrayList<DepartmentResource>();
+		for(Department dep : departments){
+			departmentResources.add(new DepartmentResource(dep));
+		}
+		logger.debug("DepartmentController#findAll::: Return response for /departments");
+        return new ResponseEntity<List<DepartmentResource>>(departmentResources, null, HttpStatus.OK);
+	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/departments", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<DepartmentResource> findByIdOrCode(@RequestParam(value = "id", required=false) final ObjectId departmentId, @RequestParam(value = "code", required=false) final String departmentCode){
-		System.out.println("DepartmentController#findByIdOrCode::: Received request for /departments");
+		logger.debug("DepartmentController#findByIdOrCode::: Received request for /departments");
 		Department department = null;
 		if(departmentId != null){
-			System.out.println("DepartmentController#findByIdOrCode::: DepartmentId: "+ departmentId);
+			logger.debug("DepartmentController#findByIdOrCode::: DepartmentId: "+ departmentId);
 			department = departmentService.findDepartmentByDepartmentId(departmentId);
 		}
 		else if(null != departmentCode && !departmentCode.isEmpty()){
-			System.out.println("DepartmentController#findByIdOrCode::: DepartmentCode: "+ departmentCode);
+			logger.debug("DepartmentController#findByIdOrCode::: DepartmentCode: "+ departmentCode);
 			department = departmentService.findDepartmentByDepartmentCode(departmentCode);
 		}
-		if (department == null) {
-			System.out.println("DepartmentController#findByIdOrCode::: Fix this! Need to send back list of all departments");
-            return new ResponseEntity<DepartmentResource>(HttpStatus.NOT_FOUND);
-        }
 		DepartmentResource departmentResource = new DepartmentResource(department);
 		HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(URI.create(departmentResource.getLink("self").getHref()));
-        System.out.println("DepartmentController#findByIdOrCode::: Return response for /departments");
-        return new ResponseEntity<DepartmentResource>(departmentResource, httpHeaders, HttpStatus.OK);
+        logger.debug("DepartmentController#findByIdOrCode::: Return response for /departments");
+        return new ResponseEntity<DepartmentResource>(departmentResource, null, HttpStatus.OK);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/departments", consumes=MediaType.APPLICATION_JSON_VALUE)
@@ -78,7 +97,7 @@ public class DepartmentController {
 	public ResponseEntity<List<Course>> findAllCoursesByDepartmentId(@PathVariable("id") final ObjectId departmentId){
 		List<Course> courses = departmentService.findAllCoursesByDepartmentId(departmentId);
 		if (courses == null) {
-            System.out.println("Courses for department id " + departmentId + " not found");
+            logger.debug("Courses for department id " + departmentId + " not found");
             return new ResponseEntity<List<Course>>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<List<Course>>(courses, HttpStatus.OK); 

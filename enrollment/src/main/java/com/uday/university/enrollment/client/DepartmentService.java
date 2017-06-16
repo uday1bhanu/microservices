@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpMethod;
@@ -29,7 +30,12 @@ import com.uday.university.enrollment.model.Department;
 public class DepartmentService {
 	Map<String, String> vars = new HashMap<String, String>();
     
-	private RestTemplate restTemplate = new RestTemplate();
+	@Autowired
+	private RestTemplate restTemplate;
+	@Bean
+	public RestTemplate getRestTemplate() {
+	    return new RestTemplate();
+	}
 	private String serviceUrl;
 	
 	@Autowired

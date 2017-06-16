@@ -7,7 +7,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,7 @@ import com.uday.university.enrollment.model.Person;
 import com.uday.university.enrollment.resources.PersonResource;
 import com.uday.university.enrollment.service.PersonService;
 
+
 /**
  * @author udaybhanuprasad
  *
@@ -37,6 +41,7 @@ public class PersonController {
 	PersonService personService;
 	@Autowired
 	DepartmentService departmentService;
+	Logger logger = LoggerFactory.getLogger("com.uday.university.enrollment.PersonController");
 	
 	@RequestMapping(method=RequestMethod.GET, value="/healthz", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> healthCheck(){
@@ -55,7 +60,7 @@ public class PersonController {
 			students = personService.findAllStudents();
 		}
 		if (students == null) {
-            System.out.println("Students not found");
+            logger.debug("Students not found");
             return new ResponseEntity<List<PersonResource>>(HttpStatus.NOT_FOUND);
         }
 		
@@ -72,7 +77,7 @@ public class PersonController {
 	public ResponseEntity<PersonResource> findStudentsById(@RequestParam(value = "id") final ObjectId studentId){
 		Person person = personService.findStudentById(studentId);
 		if (person == null) {
-            System.out.println("StudentId " + studentId + " not found");
+            logger.debug("StudentId " + studentId + " not found");
             return new ResponseEntity<PersonResource>(HttpStatus.NOT_FOUND);
         }
 		PersonResource personResource = new PersonResource(person);
@@ -87,7 +92,7 @@ public class PersonController {
 	public ResponseEntity<PersonResource> findProfessorsById(@RequestParam(value = "id") final ObjectId professorId){
 		Person person = personService.findProfessorById(professorId);
 		if (person == null) {
-            System.out.println("ProfessorId " + professorId + " not found");
+            logger.debug("ProfessorId " + professorId + " not found");
             return new ResponseEntity<PersonResource>(HttpStatus.NOT_FOUND);
         }
 		PersonResource personResource = new PersonResource(person);
@@ -113,14 +118,14 @@ public class PersonController {
 	public ResponseEntity<PersonResource> enrollDepartment(@PathVariable("id") ObjectId studentId, @RequestBody Department department) throws Exception{
 		Person person = null;
 		String departmentCode = department.getCode();
-		System.out.println("PersonController#enrollDepartment::: DepartmentCode: "+ departmentCode);
-		System.out.println("PersonController#enrollDepartment::: Calling departmentService#findByDepartmentCode ");
+		logger.debug("PersonController#enrollDepartment::: DepartmentCode: "+ departmentCode);
+		logger.debug("PersonController#enrollDepartment::: Calling departmentService#findByDepartmentCode ");
 		department = departmentService.findByDepartmentCode(departmentCode);
-		System.out.println("PersonController#enrollDepartment::: Returned from departmentService#findByDepartmentCode ");
+		logger.debug("PersonController#enrollDepartment::: Returned from departmentService#findByDepartmentCode ");
 		if(department == null){
 			throw new Exception("Department" + departmentCode + "not found");
 		}
-		System.out.println("DepartmentId: "+ department.getId() + " for "+ departmentCode);
+		logger.debug("DepartmentId: "+ department.getId() + " for "+ departmentCode);
 		try {
 			person = personService.enrollDepartment(studentId, department.getId());
 		} catch (Exception e) {
