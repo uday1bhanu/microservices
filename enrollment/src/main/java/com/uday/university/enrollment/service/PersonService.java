@@ -14,7 +14,7 @@ import com.uday.university.enrollment.model.Person;
  *
  */
 public interface PersonService {
-	Person save(Person person);
+	Iterable<Person> save(Iterable<Person> person);
 	Person enrollDepartment(ObjectId personId, ObjectId departmentId) throws Exception;
 	Person enrollCourse(ObjectId personId, String courseCode) throws Exception;
 	Person teachCourse(ObjectId personId, String courseCode) throws Exception;

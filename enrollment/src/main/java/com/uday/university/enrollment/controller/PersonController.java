@@ -6,7 +6,7 @@ package com.uday.university.enrollment.controller;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -72,6 +72,22 @@ public class PersonController {
         return new ResponseEntity<List<PersonResource>>(personResources, null, HttpStatus.OK);
 	}
 	
+	@RequestMapping(method=RequestMethod.GET, value="/students/random", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<PersonResource>> findRandomStudent(){
+		List<Person> students = new ArrayList<Person>();
+		students = personService.findAllStudents();
+		if (students == null) {
+            logger.debug("Students not found");
+            return new ResponseEntity<List<PersonResource>>(HttpStatus.NOT_FOUND);
+        }
+		
+		List<PersonResource> personResources = new ArrayList<PersonResource>();
+		
+		personResources.add(new PersonResource(students.get((int)(Math.random() * ((students.size() - 1) + 1)))));
+		
+        return new ResponseEntity<List<PersonResource>>(personResources, null, HttpStatus.OK);
+	}
+	
 	/*
 	@RequestMapping(method=RequestMethod.GET, value="/students", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PersonResource> findStudentsById(@RequestParam(value = "id") final ObjectId studentId){
@@ -89,29 +105,63 @@ public class PersonController {
 	*/
 	
 	@RequestMapping(method=RequestMethod.GET, value="/professors", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PersonResource> findProfessorsById(@RequestParam(value = "id") final ObjectId professorId){
-		Person person = personService.findProfessorById(professorId);
-		if (person == null) {
-            logger.debug("ProfessorId " + professorId + " not found");
-            return new ResponseEntity<PersonResource>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<List<PersonResource>> findProfessorsById(@RequestParam(value = "id") final ObjectId professorId){
+		List<Person> professors = new ArrayList<Person>();
+		if(professorId!=null){
+			professors.add(personService.findProfessorById(professorId));
+		}
+		else {
+			professors = personService.findAllProfessors();
+		}
+		if (professors == null) {
+            logger.debug("Professors not found");
+            return new ResponseEntity<List<PersonResource>>(HttpStatus.NOT_FOUND);
         }
-		PersonResource personResource = new PersonResource(person);
-		HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(personResource.getLink("self").getHref()));
-        
-        return new ResponseEntity<PersonResource>(personResource, httpHeaders, HttpStatus.OK);
+		
+		List<PersonResource> personResources = new ArrayList<PersonResource>();
+		for(Person professor : professors){
+			personResources.add(new PersonResource(professor));
+		}
+		
+        return new ResponseEntity<List<PersonResource>>(personResources, null, HttpStatus.OK);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET, value="/professors/random", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<PersonResource>> findRandomProfessor(){
+		List<Person> professors = new ArrayList<Person>();
+		professors = personService.findAllProfessors();
+		if (professors == null) {
+            logger.debug("Professors not found");
+            return new ResponseEntity<List<PersonResource>>(HttpStatus.NOT_FOUND);
+        }
+		
+		List<PersonResource> personResources = new ArrayList<PersonResource>();
+		
+		personResources.add(new PersonResource(professors.get((int)(Math.random() * ((professors.size() - 1) + 1)))));
+		
+        return new ResponseEntity<List<PersonResource>>(personResources, null, HttpStatus.OK);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/students", consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PersonResource> createStudent(@RequestBody Person person){
-		person.setType("S");
-		person = personService.save(person);
-		
-		PersonResource personResource = new PersonResource(person);
+	public ResponseEntity<List<PersonResource>> createStudent(@RequestBody List<Person> persons){
+		for(Person person : persons){
+			person.setType("S");	
+		}
+		persons = (List<Person>) personService.save(persons);
+		List<PersonResource> personResources = new ArrayList<PersonResource>();
+		for(Person person : persons){
+			PersonResource personResource = new PersonResource(person);
+			
+	        personResources.add(personResource);
+		}
 		HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(personResource.getLink("self").getHref()));
-        
-        return new ResponseEntity<PersonResource>(personResource, httpHeaders, HttpStatus.CREATED);
+		if(persons.size() == 1){
+			httpHeaders.setLocation(URI.create(personResources.get(0).getLink("self").getHref()));
+		}
+		else{
+			httpHeaders = null;
+		}
+        return new ResponseEntity<List<PersonResource>>(personResources, httpHeaders, HttpStatus.CREATED);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/students/{id}/enroll", consumes=MediaType.APPLICATION_JSON_VALUE)
@@ -209,14 +259,24 @@ public class PersonController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/professors", consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PersonResource> createProfessor(@RequestBody Person person){
-		person.setType("P");
-		person = personService.save(person);
-		
-		PersonResource personResource = new PersonResource(person);
+	public ResponseEntity<List<PersonResource>> createProfessor(@RequestBody List<Person> persons){
+		for(Person person : persons){
+			person.setType("P");	
+		}
+		persons = (List<Person>) personService.save(persons);
+		List<PersonResource> personResources = new ArrayList<PersonResource>();
+		for(Person person : persons){
+			PersonResource personResource = new PersonResource(person);
+			
+	        personResources.add(personResource);
+		}
 		HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(personResource.getLink("self").getHref()));
-        
-        return new ResponseEntity<PersonResource>(personResource, httpHeaders, HttpStatus.CREATED);
+		if(persons.size() == 1){
+			httpHeaders.setLocation(URI.create(personResources.get(0).getLink("self").getHref()));
+		}
+		else{
+			httpHeaders = null;
+		}
+        return new ResponseEntity<List<PersonResource>>(personResources, httpHeaders, HttpStatus.CREATED);
 	}
 }

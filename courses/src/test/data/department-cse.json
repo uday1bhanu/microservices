@@ -1,0 +1,36 @@
+{
+	"name": "Computer Science Engineering",
+	"code": "CSE",
+	"courses": [
+	  {
+	    "name": "java1",
+	    "code": "J101",
+	    "credits": 3,
+	    "description": "Java Fundamentals1"
+	  },
+		{
+	    "name": "java2",
+	    "code": "J102",
+	    "credits": 3,
+	    "description": "Java Fundamentals2"
+	  },
+		{
+	    "name": "java3",
+	    "code": "J103",
+	    "credits": 3,
+	    "description": "Java Fundamentals3"
+	  },
+		{
+	    "name": "java4",
+	    "code": "J104",
+	    "credits": 3,
+	    "description": "Java Fundamentals4"
+	  },
+		{
+	    "name": "java5",
+	    "code": "J105",
+	    "credits": 3,
+	    "description": "Java Fundamental5"
+	  }
+	]
+}

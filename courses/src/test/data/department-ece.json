@@ -1,0 +1,36 @@
+{
+	"name": "Electronics and Communications Engineering",
+	"code": "ECE",
+	"courses": [
+	  {
+	    "name": "electronics1",
+	    "code": "E101",
+	    "credits": 3,
+	    "description": "Electronics Fundamentals1"
+	  },
+		{
+	    "name": "electronics2",
+	    "code": "E102",
+	    "credits": 3,
+	    "description": "Electronics Fundamentals2"
+	  },
+		{
+	    "name": "electronics3",
+	    "code": "E103",
+	    "credits": 3,
+	    "description": "Electronics Fundamentals3"
+	  },
+		{
+	    "name": "electronics4",
+	    "code": "E104",
+	    "credits": 3,
+	    "description": "Electronics Fundamentals4"
+	  },
+		{
+	    "name": "electronics5",
+	    "code": "E105",
+	    "credits": 3,
+	    "description": "Electronics Fundamental5"
+	  }
+	]
+}

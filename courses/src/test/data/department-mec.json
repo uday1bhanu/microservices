@@ -1,0 +1,36 @@
+{
+	"name": "Mechanical Engineering",
+	"code": "ME",
+	"courses": [
+	  {
+	    "name": "mechanics1",
+	    "code": "M101",
+	    "credits": 3,
+	    "description": "Mechanics Fundamentals1"
+	  },
+		{
+	    "name": "mechanics2",
+	    "code": "M102",
+	    "credits": 3,
+	    "description": "Mechanics Fundamentals2"
+	  },
+		{
+	    "name": "mechanics3",
+	    "code": "M103",
+	    "credits": 3,
+	    "description": "Mechanics Fundamentals3"
+	  },
+		{
+	    "name": "mechanics4",
+	    "code": "M104",
+	    "credits": 3,
+	    "description": "Mechanics Fundamentals4"
+	  },
+		{
+	    "name": "mechanics5",
+	    "code": "M105",
+	    "credits": 3,
+	    "description": "Mechanics Fundamental5"
+	  }
+	]
+}

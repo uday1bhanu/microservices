@@ -30,8 +30,8 @@ public class PersonServiceImpl implements PersonService {
 	 * @see com.uday.university.enrollment.service.PersonService#save(com.uday.university.enrollment.model.Person)
 	 */
 	@Override
-	public Person save(Person person) {
-		return personRepository.save(person);
+	public Iterable<Person> save(Iterable<Person> persons) {
+		return personRepository.save(persons);
 	}
 
 	/* (non-Javadoc)
